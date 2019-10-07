@@ -24,6 +24,9 @@ import org.emoflon.ibex.tgg.operational.strategies.OperationalStrategy;
 
 import language.TGGRule;
 
+/**
+ * Gathering and processing data from IBEX
+ */
 public class VictoryDataProvider implements IVictoryDataProvider {
 
 	private final static Logger logger = Logger.getLogger(VictoryDataProvider.class);
@@ -81,7 +84,14 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 			return null;
 		}
 	}
-
+	
+	/**
+	 * Calculation of neighboring nodes in recursive manner
+	 * @param neighbors the neighbors of distance 1
+	 * @param node the node we want to calculate its neighbors
+	 * @param i counter
+	 * @param k the number of neighbors to return for the node counted by distance
+	 */
 	private void calculateNeighbourhood(Collection<EObject> neighbors, EObject node, int i, int k) {
 
 		i++;
@@ -167,7 +177,15 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 		}
 		return newUri;
 	}
-
+	
+	/**
+	 * Saves each model at passed location
+	 * @param r Resource to be saved
+	 * @param time current time for unique model name
+	 * @param newLocation path to save model at
+	 * @return newUri
+	 * @throws IOException
+	 */
 	private URI saveModel(Resource r, String time, String newLocation) throws IOException {
 		String newPath;
 		URI newUri;
@@ -189,11 +207,17 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 
 		return newUri;
 	}
-
+	
+	/**
+	 * @return saved locations
+	 */
 	public String[] getPLocations() {
 		return this.savedPLocations;
 	}
-
+	
+	/**
+	 * Creating a map for of default locations for each resource to save models
+	 */
 	public void getDefaultSaveLocation() {
 		int count = 0;
 		LinkedHashMap<String, Resource> resources = new LinkedHashMap<String, Resource>();
@@ -216,7 +240,10 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 		}
 
 	}
-
+	
+	/**
+	 * Returns default locations map for each resource
+	 */
 	public String[][] getDefaultSaveData() {
 		return defaultSaveData;
 	}

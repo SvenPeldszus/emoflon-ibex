@@ -6,6 +6,10 @@ import org.apache.log4j.Logger;
 import org.emoflon.ibex.tgg.operational.patterns.IGreenPatternFactory;
 import org.emoflon.ibex.tgg.operational.strategies.OperationalStrategy;
 
+/**
+ * This Observer class gives the size of each pattern
+ *
+ */
 public class GeneratedPatternsSizeObserver extends AbstractIbexObserver {
 
 	private final static Logger logger = Logger.getLogger(GeneratedPatternsSizeObserver.class);
@@ -14,7 +18,10 @@ public class GeneratedPatternsSizeObserver extends AbstractIbexObserver {
 	public GeneratedPatternsSizeObserver(IbexObservable observable) {
 		super(observable);
 	}
-
+	
+	/**
+	 * Calculates the size of generated patterns
+	 */
 	public void calculateSize() {
 		logger.info("Generated Patterns Size: ");
 
@@ -31,7 +38,10 @@ public class GeneratedPatternsSizeObserver extends AbstractIbexObserver {
 			logger.info(k + ": " + size);
 		});
 	}
-
+	
+	/**
+	 * Calculates the size of generated patterns
+	 */
 	@Override
 	public void update(ObservableEvent eventType, Object... additionalInformation) {
 		switch (eventType) {

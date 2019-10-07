@@ -55,7 +55,11 @@ public abstract class IbexController implements IbexObserver, IUpdatePolicy {
 
 		return null;
 	}
-
+	
+	/**
+	 * Getting resources from protocols and process them 
+	 * @param appliedRuleName the rule 
+	 */
 	private void updateProtocols(String appliedRuleName) {
 
 		EList<EObject> protocols = operationalStrategy.getProtocolResource().getContents();
@@ -72,7 +76,13 @@ public abstract class IbexController implements IbexObserver, IUpdatePolicy {
 						.findFirst().orElse(null));
 		protocolsStepList.add(protocolStep);
 	}
-
+	
+	/**
+	 * Filtering recourses based on recourse type
+	 * @param items list of all resources
+	 * @param resource resources
+	 * @return filtered resources
+	 */
 	private Set<EObject> filterResourceItems(EList<EObject> items, Resource resource) {
 		return items.stream().filter(item -> item.eResource().equals(resource)).collect(Collectors.toSet());
 	}

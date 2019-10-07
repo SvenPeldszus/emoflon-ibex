@@ -4,6 +4,10 @@ import org.apache.log4j.Logger;
 import org.emoflon.ibex.tgg.operational.matches.IMatchContainer;
 import org.emoflon.ibex.tgg.operational.strategies.OperationalStrategy;
 
+/**
+ * This Observer class gives the number of matches for each pattern
+ *
+ */
 public class NumberOfMatchesObserver extends AbstractIbexObserver {
 
 	private final static Logger logger = Logger.getLogger(NumberOfMatchesObserver.class);
@@ -13,7 +17,10 @@ public class NumberOfMatchesObserver extends AbstractIbexObserver {
 	public NumberOfMatchesObserver(IbexObservable observable) {
 		super(observable);
 	}
-
+	
+	/**
+	 * Logs the number of matches for each pattern
+	 */
 	@Override
 	public void update(ObservableEvent eventType, Object... additionalInformation) {
 		switch (eventType) {

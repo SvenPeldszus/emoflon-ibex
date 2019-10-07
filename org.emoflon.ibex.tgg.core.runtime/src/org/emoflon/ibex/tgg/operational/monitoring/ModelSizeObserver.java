@@ -6,6 +6,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.emoflon.ibex.tgg.operational.strategies.OperationalStrategy;
 
+/**
+ * This Observer class gives the size of the input and output model
+ *
+ */
 public class ModelSizeObserver extends AbstractIbexObserver {
 
 	private final static Logger logger = Logger.getLogger(ModelSizeObserver.class);
@@ -14,7 +18,10 @@ public class ModelSizeObserver extends AbstractIbexObserver {
 	public ModelSizeObserver(IbexObservable observable) {
 		super(observable);
 	}
-
+	
+	/**
+	 * Calculates and sets the currentSize of the input and output model
+	 */
 	@Override
 	public void update(ObservableEvent eventType, Object... additionalInformation) {
 		switch (eventType) {
@@ -32,7 +39,16 @@ public class ModelSizeObserver extends AbstractIbexObserver {
 			break;
 		}
 	}
-
+	
+	/**
+	 * Returns the size of the model. It uses Source, Target and Correspondence model
+	 * to calculate the size of the model. Adds the size of all three models to get the size
+	 * of whole model
+	 * @param s type of Source Resource
+	 * @param c type of Corr Resource
+	 * @param t type of Target Resource
+	 * @return currentSize
+	 */
 	private int getNumberOfObjectsInModels(Resource s, Resource c, Resource t) {
 		int sizeS = 0;
 		TreeIterator<EObject> treeIterator = s.getAllContents();

@@ -13,11 +13,19 @@ public class DataPackage {
 		matches = pMatches;
 		protocol = pProtocol;
 	}
-
+	
+	/**
+	 * 
+	 * @return the matches
+	 */
 	public Collection<IbexMatch> getMatches() {
 		return matches;
 	}
-
+	
+	/**
+	 *  the protocol
+	 * @return
+	 */
 	public List<ProtocolStep> getProtocol() {
 		return protocol;
 	}
