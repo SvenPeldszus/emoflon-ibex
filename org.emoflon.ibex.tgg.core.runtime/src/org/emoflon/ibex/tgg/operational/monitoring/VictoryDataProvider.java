@@ -50,11 +50,11 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 	}
 
 	@Override
-	public Collection<EObject> getMatchNeighbourhoods(Collection<EObject> nodes, int k) {
+	public Collection<EObject> getMatchNeighbourhoods(Collection<EObject> nodes, int k, boolean merge) {
 		try {
 			Collection<EObject> neighbors = new HashSet<EObject>();
 			for (EObject node : nodes) {
-				neighbors.addAll(getMatchNeighbourhood(node, k));
+				neighbors.addAll(getMatchNeighbourhood(node, k, merge));
 			}
 			return neighbors;
 		} catch (Exception e) {
@@ -64,17 +64,17 @@ public class VictoryDataProvider implements IVictoryDataProvider {
 	}
 
 	@Override
-	public Collection<EObject> getMatchNeighbourhood(EObject node, int k) {
+	public Collection<EObject> getMatchNeighbourhood(EObject node, int k, boolean merge) {
 		try {
 			Set<EObject> neighbors = new HashSet<EObject>();
-			if (k >= 0) {
+			
+			if (k == 0 && merge) {
 				neighbors.add(node);
-
-				if (k > 0) {
-					calculateNeighbourhood(neighbors, node, 0, k);
-				}
 			}
-
+			if (k > 0) {
+				calculateNeighbourhood(neighbors, node, 0, k);
+			}
+			
 			return neighbors;
 		} catch (Exception e) {
 			logger.error(e);
