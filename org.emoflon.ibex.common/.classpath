@@ -10,5 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="injection"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Isabe/git/emoflon-ibex/org.emoflon.ibex.common/lib/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

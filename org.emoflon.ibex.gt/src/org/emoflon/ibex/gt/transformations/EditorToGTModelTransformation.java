@@ -11,11 +11,13 @@ import org.emoflon.ibex.gt.editor.gT.EditorOperator;
 import org.emoflon.ibex.gt.editor.gT.EditorParameter;
 import org.emoflon.ibex.gt.editor.gT.EditorPattern;
 import org.emoflon.ibex.gt.editor.gT.EditorPatternType;
+import org.emoflon.ibex.gt.editor.gT.EditorProbability;
 import org.emoflon.ibex.gt.editor.utils.GTCommentExtractor;
 
 import GTLanguage.GTLanguageFactory;
 import GTLanguage.GTNode;
 import GTLanguage.GTParameter;
+import GTLanguage.GTProbability;
 import GTLanguage.GTRule;
 import GTLanguage.GTRuleSet;
 
@@ -72,9 +74,10 @@ public class EditorToGTModelTransformation extends AbstractEditorModelTransforma
 		gtRule.setName(flattenedPattern.getName());
 		gtRule.setDocumentation(documentation);
 		gtRule.setExecutable(flattenedPattern.getType() == EditorPatternType.RULE);
-
+			
 		transformNodes(flattenedPattern, gtRule);
 		transformParameters(flattenedPattern, gtRule);
+		setRuleProbability(flattenedPattern, gtRule);
 
 		gtRules.add(gtRule);
 	}
@@ -145,5 +148,29 @@ public class EditorToGTModelTransformation extends AbstractEditorModelTransforma
 		gtParameter.setName(editorParameter.getName());
 		gtParameter.setType(editorParameter.getType());
 		return gtParameter;
+	}
+	
+	/**
+	 * Sets the probability of the GTRule
+	 * 
+	 * @param gtRule the Rule, if no probability defined, it will be 1
+	 */
+	private void setRuleProbability(final EditorPattern editorPattern, final GTRule gtRule) {
+		GTProbability gtProbability = GTLanguageFactory.eINSTANCE.createGTProbability();
+		if(editorPattern.isStochastic()) {
+			EditorProbability probability = editorPattern.getProbability();
+				if(probability.getNumber() != null) {
+					gtProbability.setStaticProbability(Double.parseDouble(probability.getNumber()));		
+				}
+				if(probability.getFunction() != null) {
+					gtProbability.setMean(Double.parseDouble(probability.getFunction().getMean()));
+					gtProbability.setSd(Double.parseDouble(probability.getFunction().getSd()));
+				}
+				gtRule.setProbability(gtProbability);
+				return;		
+		}
+
+		gtProbability.setStaticProbability(1);
+		gtRule.setProbability(gtProbability);
 	}
 }

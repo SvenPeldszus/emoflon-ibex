@@ -296,6 +296,9 @@ class JavaFileGenerator {
 		if (rule.parameters.size > 0 || rule.ruleNodes.size > 0) {
 			imports.add('java.util.Objects');
 		}
+		if(ruleType == 'rule'){
+			imports.add('org.emoflon.ibex.common.operational.Probability')
+		}
 
 		val ruleSourceCode = '''
 			«printHeader(getSubPackageName('api.rules'), imports)»
@@ -306,7 +309,9 @@ class JavaFileGenerator {
 			 */
 			public class «getRuleClassName(rule)» extends «ruleClassType»<«getMatchClassName(rule)», «getRuleClassName(rule)»> {
 				private static String patternName = "«rule.name»";
-			
+				«IF ruleType == 'rule'»
+				private static Probability probability = new «getProbability(rule)»;
+				«ENDIF»
 				/**
 				 * Creates a new «ruleType» «rule.name»(«FOR parameter : rule.parameters SEPARATOR ', '»«parameter.name»«ENDFOR»).
 				 * 
@@ -321,12 +326,12 @@ class JavaFileGenerator {
 				 */
 				public «getRuleClassName(rule)»(final «APIClassName» api, final GraphTransformationInterpreter interpreter«IF rule.parameters.size == 0») {«ELSE»,«ENDIF»
 						«FOR parameter : rule.parameters SEPARATOR ', ' AFTER ') {'»final «getJavaType(parameter.type)» «parameter.name»Value«ENDFOR»
-					super(api, interpreter, patternName);
+					super(api, interpreter, patternName«IF ruleType=='rule'», probability«ENDIF»);
 					«FOR parameter : rule.parameters»
 						«getMethodName('set', parameter.name)»(«parameter.name»Value);
 					«ENDFOR»
 				}
-			
+				
 				@Override
 				protected «getMatchClassName(rule)» convertMatch(final IMatch match) {
 					return new «getMatchClassName(rule)»(this, match);
@@ -366,7 +371,11 @@ class JavaFileGenerator {
 						return this;
 					}
 			«ENDFOR»
-			
+			«IF ruleType == 'rule'»
+				public double getProbability(){
+					return probability.getProbability();
+				}
+			«ENDIF»	
 				@Override
 				public String toString() {
 					String s = "«ruleType» " + patternName + " {" + System.lineSeparator();
@@ -492,5 +501,14 @@ class JavaFileGenerator {
 		} else {
 			file.create(contentStream, true, null)
 		}
+	}
+	
+	/**
+	 * Creates a probability for a RuleClass
+	 */
+	private static def getProbability(GTRule rule){
+		return '''Probability(«IF rule.probability.sd != 0.0»«rule.probability.mean», «rule.probability.sd»
+«ELSE»«rule.probability.staticProbability»«ENDIF»)
+		'''
 	}
 }

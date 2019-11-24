@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.emoflon.ibex.common.operational.IMatch;
+import org.emoflon.ibex.common.operational.Probability;
 import org.emoflon.ibex.common.operational.PushoutApproach;
 import org.emoflon.ibex.gt.engine.GraphTransformationInterpreter;
 
@@ -49,7 +51,17 @@ public abstract class GraphTransformationRule<M extends GraphTransformationMatch
 	 * The number of rule applications until now.
 	 */
 	private int ruleApplicationCount = 0;
-
+	
+	/**
+	 * The probability that the rule is applied.
+	 */
+	private Probability probability;
+	
+	/**
+	 * Random object for probability calculation
+	 */
+	Random rnd = new Random();
+	
 	/**
 	 * Creates a new executable rule.
 	 * 
@@ -63,8 +75,9 @@ public abstract class GraphTransformationRule<M extends GraphTransformationMatch
 	 *            the name of the rule
 	 */
 	public GraphTransformationRule(final GraphTransformationAPI api, final GraphTransformationInterpreter interpreter,
-			final String ruleName) {
+			final String ruleName, Probability probability) {
 		super(api, interpreter, ruleName);
+		this.probability = probability;
 	}
 
 	/**
@@ -127,7 +140,20 @@ public abstract class GraphTransformationRule<M extends GraphTransformationMatch
 		}
 		return apply(match.get());
 	}
-
+	/**
+	 * Applies the rule on an arbitrary match with the rule 
+	 * probability if a match can be found.
+	 * 
+	 * @return an {@link Optional} for the match if it was applied; an empty Optional
+	 * if it was not applied
+	 */
+	public final Optional<M> applyStochastic(){
+		if(rnd.nextDouble() < probability.getProbability()) {
+			return apply();
+		}
+		return Optional.empty();
+	}
+	
 	/**
 	 * Applies the rule on the given match.
 	 * 
@@ -145,7 +171,20 @@ public abstract class GraphTransformationRule<M extends GraphTransformationMatch
 		});
 		return comatch;
 	}
-
+	
+	/**
+	 * Applies the rule on the given match depending on the rule probability
+	 * 
+	 * @param match the match
+	 * @return an {@link Optional} for the the match if the rule was applied;
+	 * an empty Optional if not
+	 */
+	public final Optional<M> applyStochastic(final M match){
+		if(rnd.nextDouble() < probability.getProbability()) {
+			return apply(match);
+		}
+		return Optional.empty();
+	}
 	/**
 	 * Applies the rule on at most <code>max</code> arbitrary matches.
 	 * 
