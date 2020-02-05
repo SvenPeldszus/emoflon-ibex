@@ -21,7 +21,7 @@ public class Eq extends RuntimeTGGAttributeConstraint {
 		String bindingStates = getBindingStates(a, b);
 
 		if (bindingStates.equals("BB")) {
-			setSatisfied(a.getValue().equals(b.getValue()));
+			setSatisfied(a.getValue() == null && b.getValue() == null || a.getValue().equals(b.getValue()));
 		} else if (bindingStates.equals("BF")) {
 			b.bindToValue(a.getValue());
 			setSatisfied(true);

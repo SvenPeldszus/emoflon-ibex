@@ -3,6 +3,7 @@ package org.emoflon.ibex.common.operational;
 import static org.emoflon.ibex.common.collections.CollectionFactory.cfactory;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -30,7 +31,7 @@ public class SimpleMatch implements IMatch {
 	 */
 	public SimpleMatch(final String patternName) {
 		this.patternName = patternName;
-		this.parameters = cfactory.createObjectToObjectHashMap();
+		this.parameters = new LinkedHashMap<>();
 	}
 
 	/**
@@ -41,7 +42,7 @@ public class SimpleMatch implements IMatch {
 	 */
 	public SimpleMatch(final IMatch match) {
 		this.patternName = match.getPatternName();
-		this.parameters = cfactory.createObjectToObjectHashMap();
+		this.parameters = new LinkedHashMap<>();
 		match.getParameterNames().forEach(parameterName -> {
 			this.parameters.put(parameterName, match.get(parameterName));
 		});
@@ -76,6 +77,7 @@ public class SimpleMatch implements IMatch {
 	public int getHashCode() {
 		if(!hashInit) {
 			hash = (int) parameters.values().stream().reduce(0, (a, b) -> a.hashCode() + b.hashCode());
+			hash += patternName.hashCode();
 			hashInit = true;
 		}
 		return hash;
@@ -86,11 +88,10 @@ public class SimpleMatch implements IMatch {
 		return getHashCode();
 	}
 
-	@Override
-	public boolean equals(final Object object) {
-		// TODO adrianm, lfritsche: bad performance
-		return object instanceof IMatch && isEqual((IMatch) object);
-	}
+//	@Override
+//	public boolean equals(final Object object) {
+//		return object instanceof IMatch && isEqual((IMatch) object);
+//	}
 
 	@Override
 	public String toString() {
